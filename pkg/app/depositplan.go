@@ -7,6 +7,7 @@ type DepositPlan interface {
 	Name() string
 	PlanType() string
 	PortfolioRatio() map[string]float32
+	DepositTotal() float32
 }
 
 type baseDepositPlan struct {
@@ -28,6 +29,12 @@ func newBaseDepositPlan(name string, planType string, portfolioRatio map[string]
 		return nil, errors.New("no portfolio defined")
 	}
 
+	for k, v := range portfolioRatio {
+		if k == "" || v < 0 {
+			return nil, errors.New("invalid portfolio ratio")
+		}
+	}
+
 	return &baseDepositPlan{name: name, planType: planType, portfolioRatio: portfolioRatio}, nil
 }
 
@@ -41,6 +48,14 @@ func (dp *baseDepositPlan) PlanType() string {
 
 func (dp *baseDepositPlan) PortfolioRatio() map[string]float32 {
 	return dp.portfolioRatio
+}
+
+func (dp *baseDepositPlan) DepositTotal() float32 {
+	var sum float32
+	for _, v := range dp.portfolioRatio {
+		sum += v
+	}
+	return sum
 }
 
 type monthlyDepositPlan struct {
