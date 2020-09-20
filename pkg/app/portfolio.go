@@ -10,7 +10,7 @@ type Portfolio struct {
 	Balance float32
 }
 
-// NewPortfolio instantiate and returns a portfolio witht the specified name.
+// NewPortfolio instantiate and returns a portfolio with the specified name.
 func NewPortfolio(name string) (Portfolio, error) {
 	if name == "" {
 		return Portfolio{}, errors.New("invalid name")
