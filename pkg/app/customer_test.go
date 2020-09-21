@@ -7,9 +7,25 @@ import (
 )
 
 func TestNewCustomer_shouldReturnCustomer(t *testing.T) {
-	c := NewCustomer("test")
-	assert.Equal(t, "test", c.ID)
-	assert.Empty(t, c.portfolios)
+	testNewCustomer := func(id string) {
+		c, err := NewCustomer(id)
+		assert.NoError(t, err)
+		assert.Equal(t, id, c.ID)
+		assert.Empty(t, c.portfolios)
+	}
+
+	testNewCustomer("test")
+}
+
+func TestNewCustomer_shouldReturnError_givenIdNotProvided(t *testing.T) {
+	testNewCustomer := func(id string) {
+		c, err := NewCustomer(id)
+		assert.Error(t, err)
+		assert.Equal(t, "id is empty", err.Error())
+		assert.Equal(t, Customer{}, c)
+	}
+
+	testNewCustomer("")
 }
 
 func TestAddPortfolio_shouldAddPortfolioToCustomer(t *testing.T) {

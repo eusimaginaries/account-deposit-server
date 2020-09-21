@@ -2,6 +2,7 @@ package app
 
 import (
 	"errors"
+	"fmt"
 )
 
 // DepositSession allows customer to perform a transaction
@@ -18,8 +19,11 @@ type Customer struct {
 }
 
 // NewCustomer instantiate a new customer with no portfolios
-func NewCustomer(id string) Customer {
-	return Customer{ID: id, portfolios: []*Portfolio{}}
+func NewCustomer(id string) (Customer, error) {
+	if id == "" {
+		return Customer{}, errors.New("id is empty")
+	}
+	return Customer{ID: id, portfolios: []*Portfolio{}}, nil
 }
 
 // AddPortfolio adds portfolio after determining validity
@@ -73,6 +77,13 @@ func (c *Customer) PayDepositPlan(plan DepositPlan) error {
 
 	c.DepositSession.depositPlans = append(c.DepositSession.depositPlans, plan)
 	return nil
+}
+
+// PrintPortfolio prints the balance of the customer portfolios
+func (c *Customer) PrintPortfolio() {
+	for _, p := range c.portfolios {
+		fmt.Println(p.Name, ": ", p.Balance)
+	}
 }
 
 // PerformDeposit split the passed in deposit into the respective portfolio
